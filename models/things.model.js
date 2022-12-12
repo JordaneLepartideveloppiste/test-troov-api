@@ -14,6 +14,11 @@ const thingsSchema = new Schema(
             default: null,
             trim: true,
         },
+        slug: {
+            type: String,
+            default: null,
+            trim: true,
+        },
         material: {
             type: String,
             default: null,
