@@ -4,6 +4,11 @@
 require('dotenv').config();
 const express = require('express');
 
+/**
+ * Middlewares
+ */
+const CONTROLS = require(`./middlewares/controls.mw`);
+
 
 /**
 * Init
