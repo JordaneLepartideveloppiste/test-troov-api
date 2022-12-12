@@ -10,10 +10,17 @@ const express = require('express');
 */
 const app = express();
 
+/**
+ * Db
+ */
+const DB = require('./config/db');
+DB.mongooseConnection();
 
-app.get("/", (req, res) => {
- res.json({message : "Hi"});
-});
+/**
+ * Routers
+ */
+const ROUTER = require(`./routers/router`).router;
+
 
 app.get("/hello", (req, res) => {
  res.json({message : "Hello"});
