@@ -10,7 +10,7 @@ const crypto = require("crypto");
 const PRIVATE_KEY = process.env.PARTNERS_API_KEY_PRIVATE;
 const PUBLIC_KEY = process.env.PARTNERS_API_KEY_PUBLIC;
 const moment = require("moment");
-const { Session } = require("inspector");
+
 
 module.exports = {
     /* Check PARTNERS api keys */
@@ -78,38 +78,27 @@ module.exports = {
         }
 
         if (!userId) {
-            // Getting auth header
-        const token = req.headers["authorization"].split(" ")[1];
-
-        const userId = jwt.getUserId(token);
-
-        
-        if (!token) {
-            throw new Error("Authentication failed!");
-        }
-
-        if (!userId) {
             return res
                 .status(400)
-                .json(global.ERROR("user id is missing or not valid"));
+                .json("user id is missing or not valid");
         }
-        }
-        const session = await Session.findOne({user: userId, JWT: token})
-        if(!session) {
+    
+        const sessionToFind = await Sessions.findOne({user: userId, JWT: token})
+        if(!sessionToFind) {
             return res
                 .status(400)
-                .json(global.ERROR("can't find Session"));
+                .json("can't find Session, Token seems expired");
         }
-        const user = Users.findOne({_id: session.user})
-        if(!user) {
+        const userOnSession = Users.findOne({_id: sessionToFind.user})
+        if(!userOnSession) {
             return res
                 .status(400)
-                .json(global.ERROR("can't find User with Session"));
+                .json("can't find User with Session");
         }
         req.user = {};
         req.user.session = {};
-        req.user = user;
-        req.user.session = session;
+        req.user = userOnSession;
+        req.user.session = sessionToFind;
         return next();
     } catch(err) {
         return res.status(500).json("err : " + err.message)

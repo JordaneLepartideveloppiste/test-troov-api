@@ -15,8 +15,8 @@ const SessionSchema = new Schema({
   expireAt : {
     type : Date,
     default : Date.now,
-    index: true, /* adds Index */
-    expires : 0 /* automatically expires row */
+    index: true, 
+    expires : 0
   },
 }, { timestamps: true } );
 

@@ -5,6 +5,7 @@ const DB = process.env.DB_URL;
 module.exports = {
     mongooseConnection: function () {
         // API Connection
+        mongoose.set('strictQuery', true);
         mongoose.connect(DB, {
             useNewUrlParser: true,
             useUnifiedTopology: true
