@@ -27,11 +27,11 @@ module.exports = {
         if (!publicKey || !dateTime || !signature) {
             return res
                 .status(400)
-                .json("Missing header parameters", "AUTH");
+                .json({'success' : false, 'message' :"Missing AUTH header parameters"});
         }
         // Checking public key
         if (publicKey !== PUBLIC_KEY) {
-            return res.status(401).json("Unknown API key");
+            return res.status(401).json({'success' : false, 'message' :"AUTH Unknown API key"});
         }
 
         // Check the time between request and asking
@@ -40,7 +40,7 @@ module.exports = {
         if (timeDiff > 5) {
             return res
                 .status(409)
-                .json("Request expired ; check x-datetime format", "AUTH");
+                .json({'success' : false, 'message' :"AUTH Request expired ; check x-datetime format"});
         }
 
         // Create the signature
@@ -51,13 +51,13 @@ module.exports = {
             .digest("hex");
 
         if (signature.toString() !== cryptoSign.toString()) {
-            return res.status(401).json(global.ERROR("Unauthorized", "AUTH"));
+            return res.status(401).json({'success' : false, 'message' :"Unauthorized"});
         }
 
         return next();
 
         } catch(err) {
-            return res.status(500).json("err : " + err.message)
+            return res.status(500).json({'success' : false, 'message' : err.message})
         }
         
 

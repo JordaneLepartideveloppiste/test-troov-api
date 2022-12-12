@@ -44,7 +44,7 @@ app.use(express.urlencoded({extended: false}));
 /**
  * app Router
  */
-app.use('/api/', CONTROLS.auth, ROUTER);
+app.use('/api/', ROUTER);
 
 /**
  * Catch 404
@@ -54,14 +54,6 @@ app.use(function (req, res) {
   });
 
 
-app.get("/hello", (req, res) => {
- res.json({message : "Hello"});
-});
-
-app.all("*", function(req, res) {
-   res.json({message: "Page not found"});
- });
-
-app.listen(3000, () => {
- console.log("Server has started");
+app.listen(process.env.PORT, () => {
+ console.log("Server has started on port " + process.env.PORT);
 });

@@ -2,7 +2,7 @@
 const express = require('express');
 
 // Middlewares
-const controls = require('../middlewares/controls.mw');
+const controlSession = require('../middlewares/controls.mw').session;
 
 // Controllers
 const Sessions = require('../controllers/sessions.controller');
@@ -17,10 +17,14 @@ exports.router = (function () {
     //Sessions
   
     Router.route("/login").post(Sessions.login);
-    Router.route("/logout").delete(controls.session, Sessions.logout);
+    Router.route("/logout").delete(controlSession, Sessions.logout);
 
     //Users
-    Router.route("user/signup").post(Users.create);
-    Router.route("user/things").post(controls.session, Users.me);
+    Router.route("/hello").get(Users.sayHello);
+    Router.route("/users").get(Users.all);
+    Router.route("/user/signup").post(Users.create);
+    Router.route("/user/things").post(controlSession, Users.me);
 
-})
+    return Router;
+
+})();

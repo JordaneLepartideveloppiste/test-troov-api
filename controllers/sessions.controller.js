@@ -12,9 +12,9 @@ const { signInErrors } = require('../utils/errors.utils');
 
 module.exports = {
 
-    login: async function (req, res) {
+    login: async (req, res) => {
         try {
-            const {email, password} = req.body;
+            let {email, password} = req.body;
 
             if (!email || !password) {
                 return res.status(400).json("email or password missing");
@@ -29,25 +29,29 @@ module.exports = {
                 if (!match) {
                     return res.status(400).json("Password is incorrect");
                 } else {
-                const sessionCreated =  await setSession.set(req, userToFind, 1);
-                if (!sessionCreated) {
-                    return res.status(400).json("An error occured");
-                } else {
-                    return res.status(200).json({token: sessionCreated.JWT})
+                    const sessionCreated = await setSession.set(userToFind, 1)
+                        if (sessionCreated) {
+                            return res.status(200).json({token: sessionCreated.JWT});
+                        } else {
+                            return res.status(500).json(global.ERROR("Cannot set the session"));
+                        }
+                    
                 }
 
-                }
             }
 
         } catch(err) {
             const errors = signInErrors(err);
-            res.status(500).json({errors});
+            if (errors.email || errors.password) {
+                res.status(500).json({errors});
+              }
+              res.status(500).json({"success" : false, "message" : err.message});
         }
        
         
 
     },
-    logout: async function (req, res) {
+    logout: async (req, res) => {
         try {
             const id = req.user.session._id;
 

@@ -12,25 +12,39 @@ const { isValid } = require('../utils/validate.utils');
 
 
 module.exports = {
+  sayHello: (req, res) => {
+    console.log('hello')
+  },
+  all: async (req, res) => {
+    try{
+      const allUsers = await Users.find();
+      if(!allUsers) {
+        res.status(400).send({"success" : false, "message" : "Can't get all users"});
+      }
+      res.status(200).json(allUsers)
+    } catch (err) {
+      res.status(400).send({"success" : false, "message" : err.message});
+    }
+  },
   create: async (req, res) => {
     try {
-        const {email, password} = req.body
+        let {email, password} = req.body
         /**
          * Validations
          */
         if (!email || !password) {
             return res.status(400)
-            .json("Missing email and/or password parameter");
+            .json({"success" : false, "message" : "Missing email and/or password parameter"});
         }
         if (!isValid(email, "email")) {
           return res.status(400)
-          .json("Email format invalid", "USERS");
+          .json({"success" : false, "message" : "Email format invalid"});
         }
       
         if (!isValid(password, "password")) {
           return res
             .status(400)
-            .json("Password format invalid", "USERS");
+            .json({"success" : false, "message" : "Password format invalid"});
         }
       
 
@@ -43,28 +57,33 @@ module.exports = {
         if (alreadyUser) {
             return res
                   .status(409)
-                  .json("This email still exist", "USERS");
+                  .json({"success" : false, "message" : "This email still exist"});
         } else {
             const saltRounds = 10;
-            const hash = bcrypt.hash(password, saltRounds)
-            if (!hash) {
-                res.status(500).json("Cannot crypt user")
+            bcrypt.hash(password, saltRounds, function(err, hash) {
+              console.log(hash)
+              if (err) {
+                res.status(500).json({"success" : false, "message" : err.message})
             } else {
                 const newUser = new Users({
                     email: email,
                     password: hash,
                   }).save()
                   if(!newUser) {
-                    res.status(500).json("Cannot create user")
+                    res.status(500).json({"success" : false, "message" : "Cannot create user"})
                   } else {
                     res.status(200).json(newUser)
                   }
             }
-            
+            })        
         }
     } catch (err) {
-      const errors = signUpErrors(err);
-      res.status(200).send({errors});
+      let errors = signUpErrors(err);
+      if (errors.email || errors.password) {
+        res.status(500).json({errors});
+      }
+      res.status(500).json({"success" : false, "message" : err.message});
+      
     }
   },
   me: async (req, res) => {
@@ -73,12 +92,12 @@ module.exports = {
     const userToShow = await Users.findByOne({_id: userId}).populate("things")
 
       if (!userToShow) {
-        return res.status(404).json("User not found", "USERS");
+        return res.status(404).json({"success" : false, "message" : "User not found"});
       } else {
-        return res.status(200).json(userToShow);
+        return res.status(200).json({"success" : true, userToShow});
       }
     } catch (err) {
-      return res.status(500).json("err : " + err.message)
+      return res.status(500).json({"success" : false, "message" : err.message})
     }
     
   },

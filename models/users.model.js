@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const userSchema = new Schema(
+const usersSchema = new Schema(
     {
         email: {
             type: String,
@@ -22,7 +22,7 @@ const userSchema = new Schema(
         things: [
             {
                 type: Schema.Types.ObjectId,
-                ref: "Thing",
+                ref: "Things",
                 index: true,
                 default: null,
             },
@@ -31,4 +31,4 @@ const userSchema = new Schema(
     { timestamps: true }
 );
 
-module.exports = mongoose.model("User", userSchema);
+module.exports = mongoose.model("Users", usersSchema);

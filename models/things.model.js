@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const thingSchema = new Schema(
+const thingsSchema = new Schema(
     {
         owner: {
             type: Schema.Types.ObjectId,
@@ -39,4 +39,4 @@ const thingSchema = new Schema(
     { timestamps: true }
 );
 
-module.exports = mongoose.model("Thing", thingSchema);
+module.exports = mongoose.model("Things", thingsSchema);
