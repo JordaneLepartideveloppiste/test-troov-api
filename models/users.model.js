@@ -3,6 +3,11 @@ const Schema = mongoose.Schema;
 
 const usersSchema = new Schema(
     {
+        name: {
+            type: String,
+            default: null,
+            trim: true,
+        },
         email: {
             type: String,
             default: null,

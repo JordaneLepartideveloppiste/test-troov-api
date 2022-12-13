@@ -28,7 +28,7 @@ module.exports = {
   },
   create: async (req, res) => {
     try {
-        let {email, password} = req.body
+        let {name, email, password} = req.body
         /**
          * Validations
          */
@@ -66,7 +66,8 @@ module.exports = {
                 res.status(500).json({"success" : false, "message" : err.message})
             } else {
                 const newUser = new Users({
-                    email: email,
+                    name,
+                    email,
                     password: hash,
                   }).save()
                   if(!newUser) {
