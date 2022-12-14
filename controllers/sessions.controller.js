@@ -31,9 +31,9 @@ module.exports = {
                 } else {
                     const sessionCreated = await setSession.set(userToFind, 1)
                         if (sessionCreated) {
-                            return res.status(200).json({token: sessionCreated.JWT});
+                            return res.status(200).json({user: userToFind, token: sessionCreated.JWT});
                         } else {
-                            return res.status(500).json(global.ERROR("Cannot set the session"));
+                            return res.status(500).json({success: false, message : "Cannot set the session"});
                         }
                     
                 }

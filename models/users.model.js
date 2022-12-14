@@ -19,11 +19,6 @@ const usersSchema = new Schema(
             default: null,
             trim: true,
         },
-        token: {
-            type: String,
-            default: null,
-            trim: true,
-        },
         things: [
             {
                 type: Schema.Types.ObjectId,

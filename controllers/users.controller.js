@@ -12,9 +12,6 @@ const { isValid } = require('../utils/validate.utils');
 
 
 module.exports = {
-  sayHello: (req, res) => {
-    console.log('hello')
-  },
   all: async (req, res) => {
     try{
       const allUsers = await Users.find();
@@ -95,7 +92,7 @@ module.exports = {
       if (!userToShow) {
         return res.status(404).json({"success" : false, "message" : "User not found"});
       } else {
-        return res.status(200).json({"success" : true, userToShow});
+        return res.status(200).json(userToShow);
       }
     } catch (err) {
       return res.status(500).json({"success" : false, "message" : err.message})

@@ -7,8 +7,8 @@ const Users = require("../models/users.model");
 
 // Others
 const crypto = require("crypto");
-const PRIVATE_KEY = process.env.PARTNERS_API_KEY_PRIVATE;
-const PUBLIC_KEY = process.env.PARTNERS_API_KEY_PUBLIC;
+const PRIVATE_KEY = process.env.API_PRIVATE_KEY;
+const PUBLIC_KEY = process.env.API_PUBLIC_KEY;
 const moment = require("moment");
 
 
@@ -16,6 +16,7 @@ module.exports = {
     /* Check PARTNERS api keys */
     auth: function (req, res, next) {
         try {
+            console.log(req.originalUrl)
             const publicKey = req.headers["x-public-key"];
         const dateTime = req.headers["x-datetime"];
         const signature = req.headers["x-signature"];

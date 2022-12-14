@@ -16,14 +16,14 @@ exports.router = (function () {
 
     //Sessions
   
-    Router.route("/login").post(Sessions.login);
-    Router.route("/logout").delete(controlSession, Sessions.logout);
+    Router.route("/session").post(Sessions.login);
+    Router.route("/session").delete(controlSession, Sessions.logout);
 
     //Users
-    Router.route("/hello").get(Users.sayHello);
+ 
     Router.route("/users").get(Users.all);
     Router.route("/user/signup").post(Users.create);
-    Router.route("/user/things").post(controlSession, Users.me);
+    Router.route("/user").get(controlSession, Users.me);
 
     return Router;
 
