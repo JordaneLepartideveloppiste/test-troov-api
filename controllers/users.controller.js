@@ -6,10 +6,6 @@ const Users = require('../models/users.model')
 const bcrypt = require('bcrypt')
 
 
-/** Utils */
-const { signUpErrors } = require('../utils/errors.utils');
-const { isValid } = require('../utils/validate.utils');
-
 
 module.exports = {
   all: async (req, res) => {
@@ -30,18 +26,18 @@ module.exports = {
          * Validations
          */
         if (!email || !password) {
-            return res.status(400)
+            return res.status(401)
             .json({"success" : false, "message" : "Missing email and/or password parameter"});
         }
-        if (!isValid(email, "email")) {
-          return res.status(400)
+        if (!email.match(/[a-z0-9_\-\.]+@[a-z0-9_\-\.]+\.[a-z]+/i)) {
+          return res.status(403)
           .json({"success" : false, "message" : "Email format invalid"});
         }
       
-        if (!isValid(password, "password")) {
+        if (password.length < 8) {
           return res
-            .status(400)
-            .json({"success" : false, "message" : "Password format invalid"});
+            .status(406)
+            .json({"success" : false, "message" : "Password too short"});
         }
       
 
@@ -60,7 +56,7 @@ module.exports = {
             bcrypt.hash(password, saltRounds, function(err, hash) {
               console.log(hash)
               if (err) {
-                res.status(500).json({"success" : false, "message" : err.message})
+                return res.status(500).json({"success" : false, "message" : err.message})
             } else {
                 const newUser = new Users({
                     name,
@@ -68,26 +64,24 @@ module.exports = {
                     password: hash,
                   }).save()
                   if(!newUser) {
-                    res.status(500).json({"success" : false, "message" : "Cannot create user"})
+                    return res.status(500).json({"success" : false, "message" : "Cannot create user"})
                   } else {
-                    res.status(200).json(newUser)
+                    return res.status(200).json(newUser)
                   }
             }
             })        
         }
     } catch (err) {
-      let errors = signUpErrors(err);
-      if (errors.email || errors.password) {
-        res.status(500).json({errors});
-      }
-      res.status(500).json({"success" : false, "message" : err.message});
+      return res.status(500).json({"success" : false, "message" : err.message});
       
     }
   },
   me: async (req, res) => {
     try {
-      const userId = req.user._id;
-    const userToShow = await Users.findByOne({_id: userId}).populate("things")
+     
+      const userId = req.user.session.user.toString();
+  
+    const userToShow = await Users.findOne({_id: userId}).populate('things')
 
       if (!userToShow) {
         return res.status(404).json({"success" : false, "message" : "User not found"});

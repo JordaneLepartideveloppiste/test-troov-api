@@ -95,12 +95,14 @@ module.exports = {
             return res
                 .status(400)
                 .json("can't find User with Session");
+        } else {
+            req.user = {};
+            req.user.session = {};
+            req.user = userOnSession;
+            req.user.session = sessionToFind;
+            return next();
         }
-        req.user = {};
-        req.user.session = {};
-        req.user = userOnSession;
-        req.user.session = sessionToFind;
-        return next();
+        
     } catch(err) {
         return res.status(500).json("err : " + err.message)
     }
