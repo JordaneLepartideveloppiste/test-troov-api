@@ -44,7 +44,7 @@ app.use(express.urlencoded({extended: false}));
 /**
  * app Router
  */
-app.use('/api/',  ROUTER);
+app.use('/api/', CONTROLS.auth, ROUTER);
 
 /**
  * Catch 404
